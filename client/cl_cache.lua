@@ -2,7 +2,7 @@
 -- Edited by iSentrie
 
 AddEventHandler("playerSpawned", function ()
-	loadAfterSpawn()
+	dataCycle()
 
 	if Cache.ClientPedId then
 		print('^1[^0CACHE^1]^0 Player ped just received an ID:'..Cache.ClientPedId)
@@ -31,23 +31,14 @@ Cache.IsPedInAnyVehicle = IsPedInAnyVehicle(Cache.PlayerPedId, false) -- True/Fa
 
 -- Data
 -- It's ran through this thread so we can set it to the data above in the cache table
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Cache.ClientPlayerId = PlayerId()
-		Cache.ClientPedId = PlayerPedId()
-		Cache.PlayerFromServerId = GetPlayerFromServerId(Cache.ClientPlayerId)
-		Cache.GetPlayerPed = GetPlayerPed(Cache.PlayerFromServerId)
-		Cache.ClientGetEntityCoords = GetEntityCoords(Cache.ClientPedId)
-		Cache.GetVehiclePedIsCurrentlyIn = GetVehiclePedIsIn(Cache.ClientPedId, false)
-		Cache.IsPedInAnyVehicle = IsPedInAnyVehicle(Cache.ClientPlayerPedId, false)
-		Cache.IsPedOnFoot = IsPedOnFoot(Cache.PlayerPedId)
-		Cache.IsPedSittingInAnyVehicle = IsPedSittingInAnyVehicle(Cache.ClientPedId)
-		Cache.PlayersLastVehicle = GetPlayersLastVehicle()
-		Citizen.Wait(500)
+		dataCycle()
+		Wait(500)
 	end
 end)
 
-function loadAfterSpawn()
+function dataCycle()
 	Cache.ClientPlayerId = PlayerId()
 	Cache.ClientPedId = PlayerPedId()
 	Cache.PlayerFromServerId = GetPlayerFromServerId(Cache.ClientPlayerId)
@@ -61,7 +52,7 @@ function loadAfterSpawn()
 end
 
 AddEventHandler('onResourceStart', function()
-	loadAfterSpawn()
+	dataCycle()
 	print('^1[^0CACHE^1]^0 Loaded after resource start.')
 
 	if not Cache.ClientPedId then

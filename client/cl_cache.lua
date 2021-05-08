@@ -1,3 +1,6 @@
+-- Created by Mascotte45
+-- Edited by iSentrie
+
 AddEventHandler("playerSpawned", function ()
 	loadAfterSpawn()
 
@@ -6,8 +9,6 @@ AddEventHandler("playerSpawned", function ()
 	end
 end)
 
--- Created by Mascotte45
--- Default cache data 
 AddEventHandler('mascotte-cache:getCacheData', function(cb)
 	cb(Cache)
 end)
@@ -17,7 +18,6 @@ function getCacheData()
 end
 
 Cache = {}
-
 Cache.ClientPlayerId = PlayerId()
 Cache.ClientPedId = PlayerPedId()
 Cache.PlayerFromServerId = GetPlayerFromServerId(Cache.ClientPlayerId)
@@ -29,20 +29,21 @@ Cache.IsPedSittingInAnyVehicle = IsPedSittingInAnyVehicle(Cache.ClientPedId) -- 
 Cache.GetVehiclePedIsCurrentlyIn = GetVehiclePedIsIn(Cache.ClientPedId, false) -- Vehicle Player is currently in 
 Cache.IsPedInAnyVehicle = IsPedInAnyVehicle(Cache.PlayerPedId, false) -- True/False is player in any kind of vehicle
 
+-- Data
+-- It's ran through this thread so we can set it to the data above in the cache table
 Citizen.CreateThread(function()
 	while true do
 		Cache.ClientPlayerId = PlayerId()
 		Cache.ClientPedId = PlayerPedId()
 		Cache.PlayerFromServerId = GetPlayerFromServerId(Cache.ClientPlayerId)
 		Cache.GetPlayerPed = GetPlayerPed(Cache.PlayerFromServerId)
-
 		Cache.ClientGetEntityCoords = GetEntityCoords(Cache.ClientPedId)
 		Cache.GetVehiclePedIsCurrentlyIn = GetVehiclePedIsIn(Cache.ClientPedId, false)
 		Cache.IsPedInAnyVehicle = IsPedInAnyVehicle(Cache.ClientPlayerPedId, false)
 		Cache.IsPedOnFoot = IsPedOnFoot(Cache.PlayerPedId)
 		Cache.IsPedSittingInAnyVehicle = IsPedSittingInAnyVehicle(Cache.ClientPedId)
 		Cache.PlayersLastVehicle = GetPlayersLastVehicle()
-		Citizen.Wait(750)
+		Citizen.Wait(500)
 	end
 end)
 
@@ -51,7 +52,6 @@ function loadAfterSpawn()
 	Cache.ClientPedId = PlayerPedId()
 	Cache.PlayerFromServerId = GetPlayerFromServerId(Cache.ClientPlayerId)
 	Cache.GetPlayerPed = GetPlayerPed(Cache.PlayerFromServerId)
-
 	Cache.ClientGetEntityCoords = GetEntityCoords(Cache.ClientPedId)
 	Cache.GetVehiclePedIsCurrentlyIn = GetVehiclePedIsIn(Cache.ClientPedId, false)
 	Cache.IsPedInAnyVehicle = IsPedInAnyVehicle(Cache.ClientPlayerPedId, false)
@@ -61,8 +61,10 @@ function loadAfterSpawn()
 end
 
 AddEventHandler('onResourceStart', function()
-	if Cache.ClientPedId then
-		print('^1[^0CACHE^1]^0 Loaded after resource start.')
-		loadAfterSpawn()
+	loadAfterSpawn()
+	print('^1[^0CACHE^1]^0 Loaded after resource start.')
+
+	if not Cache.ClientPedId then
+		print('^1[^0CACHE^1]^0 Your player ped ID is missing.')
 	end
 end)
